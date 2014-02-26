@@ -5,7 +5,7 @@ body {
 	background-repeat:no-repeat;
 	overflow: hidden;
 	color: #FFFFFF;
-	font: 1.5em Georgia, arial, verdana, sans-serif;
+	font: 1em arial,Georgia, arial, verdana, sans-serif;
 	margin:5px;
 }
 hr {
@@ -45,7 +45,7 @@ h3 {
 }
 
 p {
-	margin-top: 5px;
+	margin-top: 0px;
 	color: #A0A0A0;
 	font-weight: normal;
 	font-size: .8em;
@@ -63,7 +63,7 @@ img {
 .header {
 	width: 100%;
 	height: 100px;
-	margin-bottom: 10px;
+	margin-bottom: 0px;
 }
 .HeaderLeft {
 	width: 25%;
@@ -74,7 +74,7 @@ img {
 	text-align: left;
 }
 .HeaderCenter {
-	width: 50%;
+	width: 25%;
 	height: 50px;
 	text-align: center;
 	float: left;
@@ -83,7 +83,7 @@ img {
 	padding-top:25px;
 }
 .HeaderRight {
-	width: 25%;
+	width: 50%;
 	float: right;
 	font-size: .85em;
 	font-weight: bold;
@@ -111,7 +111,7 @@ table thead{
 }
 table thead th{
 	min-height:35px;
-	font-size: .65em;
+	font-size: 1.05em;
 	font-weight: bold;
 	vertical-align: top;
 }
@@ -353,13 +353,15 @@ margin: 0px;
 .copyright {
 color:#666 ;
 font-size: 12px;
-align: right;
+align: center;
+float: center;
 
 }
 
 .beerfeed {
 color: #ccc;
-font-size: 12px;
+font-family: arial;
+font-size: 10px;
 
 }
 
@@ -368,4 +370,9 @@ display: inline-block;
 padding-top: 4px;
 position: relative;
 top: -24px;
+float: right;
+}
+.beerimg{
+position: relative;
+float: right
 }

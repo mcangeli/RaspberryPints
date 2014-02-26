@@ -39,6 +39,7 @@
 			$beeritem = array(
 				"id" => $b['id'],
 				"beername" => $b['name'],
+				"untID" => $b['untID'],
 				"style" => $b['style'],
 				"notes" => $b['notes'],
 				"og" => $b['ogAct'],
@@ -99,11 +100,44 @@
 					</h1>
 				</div>
 				<div class="HeaderRight">
-					<?php if($config[ConfigNames::UseHighResolution]) { ?>			
-						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints-4k.png" height="200" alt=""></a>
-					<?php } else { ?>
-						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints.png" height="100" alt=""></a>
-					<?php } ?>
+				<?php
+//Only checkins if $Brewery[id] is set
+		if($config[ConfigNames::BreweryID]){ 
+
+$utconfig = array(
+    'clientId'     => $config[ClientID],
+    'clientSecret' => $config[ClientSecret],
+    'redirectUri'  => '',
+    'accessToken'  => '',
+);
+
+
+$buntappd = new Pintlabs_Service_Untappd($utconfig);
+try {
+    $bfeed = $buntappd->breweryFeed($config[BreweryID], '','', '5');
+} catch (Exception $e) {
+    die($e->getMessage());
+}
+
+echo "<table width=95%><tr>";
+
+foreach ($bfeed->response->checkins->items as $i) {
+    
+
+        echo "<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
+        echo "<center><div class=circular style='width: 50px;height: 50px;background-image: url(". $i->user->user_avatar .");background-size: cover;display: block;border-radius: 100px;-webkit-border-radius:  100px;-moz-border-radius: 100px;'></div>";
+      echo "".$i->user->user_name."<br />";
+
+      echo $i->beer->beer_name;
+
+      echo "</td></tr></table>";
+      echo "</div></td>";
+
+}
+
+echo "</tr></table>";
+}
+?>	
 				</div>
 			</div>
 			<!-- End Header Bar -->
@@ -145,7 +179,7 @@
 							</th>
 						<?php } ?>
 					</tr>
-				</thead>
+OB				</thead>
 				<tbody>
 					<?php for($i = 1; $i <= $numberOfTaps; $i++) {
 						if( isset($beers[$i]) ) {
@@ -200,12 +234,10 @@
 								<?php } 
 								
 								// This section calls for the rating from Untappd
-                                                                        $untid = mysql_fetch_array(mysql_query("select `untID` from beers where id=".$beer[id].";"),0) ;
-                                                                                $utid = $untid[0];
-
-																				
+                                                       
+                                $beerImg = '';																				
 								//Only Display rating if $Client[id] is set
-								if($config[ConfigNames::ClientID] && $utid!='0'){ 
+								if($config[ConfigNames::ClientID] && $beer[untID]!='0'){ 
 								
 
 
@@ -222,7 +254,7 @@ $utconfig = array(
 
 $untappd = new Pintlabs_Service_Untappd($utconfig);
 try {
-    $feed = $untappd->beerInfo($utid);
+    $feed = $untappd->beerInfo($beer['untID']);
 }  catch (Exception $e) {
     die($e->getMessage());
 }
@@ -253,8 +285,10 @@ $img = "<span class=\"rating small r45\"></span><span class=\"num\">(".round($rs
 } else if ($rs>'4.5') {
 $img = "<span class=\"rating small r50\"></span><span class=\"num\">(".round($rs,2).")</span>";
 } 
+$beerImg = "<img src=".$feed->response->beer->beer_label." border=0 width=100 height=100>";
 } else {
 $img = '';
+$beerImg = '';
 }
 
 
@@ -262,6 +296,10 @@ $img = '';
 								?>
 							
 								<td class="name">
+									<div class="beerimg">
+									<?php 
+echo $beerImg; ?>
+									</div>
 									<h1><?php echo $beer['beername']; ?></h1>
 									<h2 class="subhead"><?php echo str_replace("_","",$beer['style']); ?></h2>
 									<p class="rating">
@@ -427,45 +465,17 @@ $img = '';
 					<?php } ?>
 				</tbody>
 			</table>
-		<?php
-//Only checkins if $Brewery[id] is set
-		if($config[ConfigNames::BreweryID]){ 
-
-$utconfig = array(
-    'clientId'     => $config[ClientID],
-    'clientSecret' => $config[ClientSecret],
-    'redirectUri'  => '',
-    'accessToken'  => '',
-);
-
-
-$buntappd = new Pintlabs_Service_Untappd($utconfig);
-try {
-    $bfeed = $buntappd->breweryFeed($config[BreweryID], '','', '5');
-} catch (Exception $e) {
-    die($e->getMessage());
-}
-
-echo "<table width=95%><tr>";
-
-foreach ($bfeed->response->checkins->items as $i) {
-    
-
-        echo "<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
-        echo "<center><div class=circular style='width: 50px;height: 50px;background-image: url(". $i->user->user_avatar .");background-size: cover;display: block;border-radius: 100px;-webkit-border-radius:  100px;-moz-border-radius: 100px;'></div>";
-      echo "".$i->user->user_name."<br />";
-
-      echo "Is drinking a <br />". $i->beer->beer_name ."<br />";
-
-      echo "</td></tr></table>";
-      echo "</div></td>";
-
-}
-
-echo "</tr></table>";
-}
-?>
+		
 		</div>
-<div class="copyright">Data provided by <a href="http://untappd.com">Untappd</a>.</div>
+<div class="copyright" align=center>
+<?php if($config[ConfigNames::UseHighResolution]) { ?>			
+						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints-4k.png" height="200" alt=""></a>
+					<?php } else { ?>
+						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints.png" height="100" alt=""></a>
+					<?php } ?>
+					<br />
+					Data provided by <a href="http://untappd.com">Untappd</a>.
+					</div>
+
 	</body>
 </html>
