@@ -162,14 +162,14 @@ require_once __DIR__.'/includes/functions.php';
 								<td class="name">
 									<div class="beerimg">
 									<?php 
-									echo beerImg($config,$beer[untID]); ?>
+									echo beerImg($config,$beer['untID']); ?>
 									</div>
 									<h1><?php echo $beer['beername']; ?></h1>
 									<h2 class="subhead"><?php echo str_replace("_","",$beer['style']); ?></h2>
 									<p class="rating">
 									<?php 
 										//Place the Rating
-										echo BeerRating($config,$beer[untID]);
+										echo BeerRating($config,$beer['untID']);
 									 ?>
 									</p>
 									<p><?php echo $beer['notes']; ?></p>
