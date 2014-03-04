@@ -5,59 +5,14 @@
         }
 ?>
 <?php
-	require_once __DIR__.'/includes/config_names.php';
-
-	require_once __DIR__.'/includes/config.php';
+	
 
 	require_once __DIR__.'/admin/includes/managers/tap_manager.php';
 	
-	//This calls the Untappd Library
-	require_once __DIR__.'/includes/Untappd.php';
+require_once __DIR__.'/includes/functions.php';
 	
-	//This can be used to choose between CSV or MYSQL DB
-	$db = true;
 	
-	// Setup array for all the beers that will be contained in the list
-	$beers = array();
 	
-	if($db){
-		// Connect to the database
-		db();
-		
-		
-		$config = array();
-		$sql = "SELECT * FROM config";
-		$qry = mysql_query($sql);
-		while($c = mysql_fetch_array($qry)){
-			$config[$c['configName']] = $c['configValue'];
-		}
-		
-		$sql =  "SELECT * FROM vwGetActiveTaps";
-		$qry = mysql_query($sql);
-		while($b = mysql_fetch_array($qry))
-		{
-			$beeritem = array(
-				"id" => $b['id'],
-				"beername" => $b['name'],
-				"untID" => $b['untID'],
-				"style" => $b['style'],
-				"notes" => $b['notes'],
-				"og" => $b['ogAct'],
-				"fg" => $b['fgAct'],
-				"srm" => $b['srmAct'],
-				"ibu" => $b['ibuAct'],
-				"startAmount" => $b['startAmount'],
-				"amountPoured" => $b['amountPoured'],
-				"remainAmount" => $b['remainAmount'],
-				"tapNumber" => $b['tapNumber'],
-				"srmRgb" => $b['srmRgb']
-			);
-			$beers[$b['tapNumber']] = $beeritem;
-		}
-		
-		$tapManager = new TapManager();
-		$numberOfTaps = $tapManager->GetTapNumber();
-	}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
@@ -101,42 +56,9 @@
 				</div>
 				<div class="HeaderRight">
 				<?php
-//Only checkins if $Brewery[id] is set
-		if($config[ConfigNames::BreweryID]){ 
+// Calls the brewery Feed
+ utBreweryFeed($config);
 
-$utconfig = array(
-    'clientId'     => $config[ClientID],
-    'clientSecret' => $config[ClientSecret],
-    'redirectUri'  => '',
-    'accessToken'  => '',
-);
-
-
-$buntappd = new Pintlabs_Service_Untappd($utconfig);
-try {
-    $bfeed = $buntappd->breweryFeed($config[BreweryID], '','', '5');
-} catch (Exception $e) {
-    die($e->getMessage());
-}
-
-echo "<table width=95%><tr>";
-
-foreach ($bfeed->response->checkins->items as $i) {
-    
-
-        echo "<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
-        echo "<center><div class=circular style='width: 50px;height: 50px;background-image: url(". $i->user->user_avatar .");background-size: cover;display: block;border-radius: 100px;-webkit-border-radius:  100px;-moz-border-radius: 100px;'></div>";
-      echo "".$i->user->user_name."<br />";
-
-      echo $i->beer->beer_name;
-
-      echo "</td></tr></table>";
-      echo "</div></td>";
-
-}
-
-echo "</tr></table>";
-}
 ?>	
 				</div>
 			</div>
@@ -179,7 +101,7 @@ echo "</tr></table>";
 							</th>
 						<?php } ?>
 					</tr>
-OB				</thead>
+				</thead>
 				<tbody>
 					<?php for($i = 1; $i <= $numberOfTaps; $i++) {
 						if( isset($beers[$i]) ) {
@@ -233,79 +155,21 @@ OB				</thead>
 									</td>
 								<?php } 
 								
-								// This section calls for the rating from Untappd
-                                                       
-                                $beerImg = '';																				
-								//Only Display rating if $Client[id] is set
-								if($config[ConfigNames::ClientID] && $beer[untID]!='0'){ 
 								
-
-
-                                                                                         
-
-
-
-$utconfig = array(
-    'clientId'     => $config[ClientID],
-    'clientSecret' => $config[ClientSecret],
-    'redirectUri'  => '',
-    'accessToken'  => '',
-);
-
-$untappd = new Pintlabs_Service_Untappd($utconfig);
-try {
-    $feed = $untappd->beerInfo($beer['untID']);
-}  catch (Exception $e) {
-    die($e->getMessage());
-}
-
-
-$rs = $feed->response->beer->rating_score;
-
-if ($rs >= '0' && $rs<'.5') {
- $img = "<span class=\"rating small r00\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs=='.5') {
-$img = "<span class=\"rating small r05\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs >'.5' && $rs<'1.5') {
-$img = "<span class=\"rating small r10\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs=='1.5') {
-$img = "<span class=\"rating small r15\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs >'1.5' && $rs <'2.5') {
-$img = "<span class=\"rating small r20\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs =='2.5' ) {
-$img = "<span class=\"rating small r25\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs >'2.5' && $rs < '3.5') {
-$img = "<span class=\"rating small r30\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs=='3.5') {
- $img = "<span class=\"rating small r35\"></span><span class=\"num\">(".round($rs,2).")</span>";
-}  else if ($rs > '3.5' && $rs< '4.5') {
- $img = "<span class=\"rating small r40\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs =='4.5') {
-$img = "<span class=\"rating small r45\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} else if ($rs>'4.5') {
-$img = "<span class=\"rating small r50\"></span><span class=\"num\">(".round($rs,2).")</span>";
-} 
-$beerImg = "<img src=".$feed->response->beer->beer_label." border=0 width=100 height=100>";
-} else {
-$img = '';
-$beerImg = '';
-}
-
-
-// Done with Rating
+								
 								?>
 							
 								<td class="name">
 									<div class="beerimg">
 									<?php 
-echo $beerImg; ?>
+									echo beerImg($config,$beer[untID]); ?>
 									</div>
 									<h1><?php echo $beer['beername']; ?></h1>
 									<h2 class="subhead"><?php echo str_replace("_","",$beer['style']); ?></h2>
 									<p class="rating">
 									<?php 
 										//Place the Rating
-										echo $img;
+										echo BeerRating($config,$beer[untID]);
 									 ?>
 									</p>
 									<p><?php echo $beer['notes']; ?></p>
