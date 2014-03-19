@@ -435,41 +435,57 @@ echo $beerImg; ?>
 				</tbody>
 			</table>
 		<?php
-//Only checkins if $Brewery[id] is set
-		if($config[ConfigNames::BreweryID]){ 
+//Only checkins if $BreweryID is set
+		if($config['ClientID']){ 
 
 $utconfig = array(
-    'clientId'     => $config[ClientID],
-    'clientSecret' => $config[ClientSecret],
+    'clientId'     => $config['ClientID'],
+    'clientSecret' => $config['ClientSecret'],
     'redirectUri'  => '',
     'accessToken'  => '',
 );
 
 
+$cachefile = "cache/bfeed";
+$filetimemod = filemtime($cachefile)+1800;
+if (time()<$filetimemod) {
+include $cachefile;
+} else {
+ob_start();
 $buntappd = new Pintlabs_Service_Untappd($utconfig);
 try {
-    $bfeed = $buntappd->breweryFeed($config[BreweryID], '','', '5');
+    
+    $bfeed = $buntappd->breweryFeed($config['BreweryID'], '','', '4');
+    
 } catch (Exception $e) {
     die($e->getMessage());
-}
+} 
 
-echo "<table width=95%><tr>";
+  
+$bfeeds .="<table width=95%><tr>";
 
 foreach ($bfeed->response->checkins->items as $i) {
     
+        $j = $i->beer->beer_name;
+        $bfeeds .="<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
+        $bfeeds .="<center><div class=circular style='width: 50px;height: 50px;background-image: url(". $i->user->user_avatar .");background-size: cover;display: block;border-radius: 100px;-webkit-border-radius:  100px;-moz-border-radius: 100px;'></div>";
+      $bfeeds .="".$i->user->user_name."<br />";
 
-        echo "<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
-        echo "<center><div class=circular style='width: 50px;height: 50px;background-image: url(". $i->user->user_avatar .");background-size: cover;display: block;border-radius: 100px;-webkit-border-radius:  100px;-moz-border-radius: 100px;'></div>";
-      echo "".$i->user->user_name."<br />";
+      $bfeeds .=$i->beer->beer_name;
 
-      echo "Is drinking a <br />". $i->beer->beer_name ."<br />";
-
-      echo "</td></tr></table>";
-      echo "</div></td>";
-
+      $bfeeds .="</td></tr></table>";
+      $bfeeds .="</div></td>";
+ 
 }
 
-echo "</tr></table>";
+$bfeeds .="</tr></table>";
+    $fp = fopen($cachefile, 'w');
+    fwrite($fp, $bfeeds);
+    fclose($fp);
+
+ob_end_flush();
+include $cachefile;
+}
 }
 ?>
 		</div>
