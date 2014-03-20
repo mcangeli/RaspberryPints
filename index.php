@@ -21,7 +21,7 @@ require_once __DIR__.'/includes/functions.php';
 	<head>
 		<title>RaspberryPints</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
+                 <meta http-equiv="refresh" content="600">
 		<!-- Set location of Cascading Style Sheet -->
 		<link rel="stylesheet" type="text/css" href="style.css">
 		
@@ -69,35 +69,35 @@ require_once __DIR__.'/includes/functions.php';
 					<tr>
 						<?php if($config[ConfigNames::ShowTapNumCol]){ ?>
 							<th class="tap-num">
-								TAP<br>#
+								TAP
 							</th>
 						<?php } ?>
 						
 						<?php if($config[ConfigNames::ShowSrmCol]){ ?>
 							<th class="srm">
-								GRAVITY<hr>COLOR
+								<!-- GRAVITY<hr -->COLOR
 							</th>
 						<?php } ?>
 						
 						<?php if($config[ConfigNames::ShowIbuCol]){ ?>
 							<th class="ibu">
-								BALANCE<hr>BITTERNESS
+								<!-- BALANCE<hr -->BITTERNESS
 							</th>
 						<?php } ?>
 						
 						<th class="name">
-							BEER NAME &nbsp; & &nbsp; STYLE<hr>TASTING NOTES
+							BEER INFO
 						</th>
 						
 						<?php if($config[ConfigNames::ShowAbvCol]){ ?>
 							<th class="abv">
-								CALORIES<hr>ALCOHOL
+								<!-- CALORIES<hr -->ALCOHOL
 							</th>
 						<?php } ?>
 						
 						<?php if($config[ConfigNames::ShowKegCol]){ ?>
 							<th class="keg">
-								POURED<hr>REMAINING
+								<!-- POURED<hr -->REMAINING
 							</th>
 						<?php } ?>
 					</tr>
@@ -116,29 +116,29 @@ require_once __DIR__.'/includes/functions.php';
 							
 								<?php if($config[ConfigNames::ShowSrmCol]){ ?>
 									<td class="srm">
-										<h3><?php echo $beer['og']; ?> OG</h3>
+										<!-- h3><?php //echo $beer['og']; ?> OG</h3 -->
 										
 										<div class="srm-container">
 											<div class="srm-indicator" style="background-color: rgb(<?php echo $beer['srmRgb'] != "" ? $beer['srmRgb'] : "0,0,0" ?>)"></div>
 											<div class="srm-stroke"></div> 
 										</div>
 										
-										<h2><?php echo $beer['srm']; ?> SRM</h2>
+										<!-- h2><?php //echo $beer['srm']; ?> SRM</h2 -->
 									</td>
 								<?php } ?>
 							
 								<?php if($config[ConfigNames::ShowIbuCol]){ ?>
 									<td class="ibu">
-										<h3>
+										<!-- h3>
 											<?php 
-												if( $beer['og'] > 1 ){
+										/*		if( $beer['og'] > 1 ){
 													echo number_format((($beer['ibu'])/(($beer['og']-1)*1000)), 2, '.', '');
 												}else{
 													echo '0.00';
 												}
-											?> 
+										*/	?> 
 											BU:GU
-										</h3>
+										</h3 -->
 										
 										<div class="ibu-container">
 											<div class="ibu-indicator"><div class="ibu-full" style="height:<?php echo $beer['ibu'] > 100 ? 100 : $beer['ibu']; ?>%"></div></div>
@@ -151,7 +151,7 @@ require_once __DIR__.'/includes/functions.php';
 												*/
 											?>
 										</div>
-										<h2><?php echo $beer['ibu']; ?> IBU</h2>
+										<!-- h2><?php echo $beer['ibu']; ?> IBU</h2 -->
 									</td>
 								<?php } 
 								
@@ -177,16 +177,16 @@ require_once __DIR__.'/includes/functions.php';
 							
 								<?php if(($config[ConfigNames::ShowAbvCol]) && ($config[ConfigNames::ShowAbvImg])){ ?>
 									<td class="abv">
-										<h3><?php
-											$calfromalc = (1881.22 * ($beer['fg'] * ($beer['og'] - $beer['fg'])))/(1.775 - $beer['og']);
+										<!-- h3><?php
+										/*	$calfromalc = (1881.22 * ($beer['fg'] * ($beer['og'] - $beer['fg'])))/(1.775 - $beer['og']);
 											$calfromcarbs = 3550.0 * $beer['fg'] * ((0.1808 * $beer['og']) + (0.8192 * $beer['fg']) - 1.0004);
 											if ( ($beer['og'] == 1) && ($beer['fg'] == 1 ) ) {
 												$calfromalc = 0;
 												$calfromcarbs = 0;
 												}
 											echo number_format($calfromalc + $calfromcarbs), " kCal";
-											?>
-										</h3>
+										*/	?>
+										</h3 -->
 										<div class="abv-container">
 											<?php
 												$abv = ($beer['og'] - $beer['fg']) * 131;
@@ -209,7 +209,7 @@ require_once __DIR__.'/includes/functions.php';
 												}
 											?>
 										</div>
-										<h2><?php echo number_format($abv, 1, '.', ',')."%"; ?> ABV</h2>
+										<!-- h2><?php echo number_format($abv, 1, '.', ',')."%"; ?> ABV</h2 -->
 									</td>
 								<?php } ?>
 								
@@ -236,7 +236,7 @@ require_once __DIR__.'/includes/functions.php';
 								
 								<?php if($config[ConfigNames::ShowKegCol]){ ?>
 									<td class="keg">
-										<h3><?php echo number_format((($beer['startAmount'] - $beer['remainAmount']) * 128)); ?> fl oz poured</h3>
+										<!-- h3><?php echo number_format((($beer['startAmount'] - $beer['remainAmount']) * 128));  ?> fl oz poured</h3 -->
 										<?php 
 											$kegImgClass = "";
 											$percentRemaining = $beer['remainAmount'] / $beer['startAmount'] * 100;
@@ -257,7 +257,7 @@ require_once __DIR__.'/includes/functions.php';
 										<div class="keg-container">
 											<div class="keg-indicator"><div class="keg-full <?php echo $kegImgClass ?>" style="height:<?php echo $percentRemaining; ?>%"></div></div>
 										</div>
-										<h2><?php echo number_format(($beer['remainAmount'] * 128)); ?> fl oz left</h2>
+										<!-- h2><?php echo number_format(($beer['remainAmount'] * 128)); ?> fl oz left</h2 -->
 									</td>
 								<?php } ?>
 							</tr>
@@ -331,14 +331,14 @@ require_once __DIR__.'/includes/functions.php';
 			</table>
 		
 		</div>
-<div class="copyright" align=center>
+<div class="copyright">
 <?php if($config[ConfigNames::UseHighResolution]) { ?>			
 						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints-4k.png" height="200" alt=""></a>
 					<?php } else { ?>
-						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints.png" height="100" alt=""></a>
+						<a href="http://www.raspberrypints.com"><img src="img/RaspberryPints.png" height=50 width=125 alt=""></a>
 					<?php } ?>
 					<br />
-					Data provided by <a href="http://untappd.com">Untappd</a>.
+					<align=right> Data provided by <a href="http://untappd.com">Untappd</a>.</align>
 					</div>
 
 	</body>

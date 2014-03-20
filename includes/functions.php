@@ -66,30 +66,47 @@ $utconfig = array(
 );
 
 
+
+$cachefile = "cache/bfeed";
+$filetimemod = filemtime($cachefile)+1800;
+if (time()<$filetimemod) {
+include $cachefile;
+} else {
+ob_start();
 $buntappd = new Pintlabs_Service_Untappd($utconfig);
 try {
-    $bfeed = $buntappd->breweryFeed($config['BreweryID'], '','', '5');
+    
+    $bfeed = $buntappd->breweryFeed($config['BreweryID'], '','', '4');
+    
 } catch (Exception $e) {
     die($e->getMessage());
-}
+} 
+
   
-echo "<table width=95%><tr>";
+$bfeeds .="<table width=95%><tr>";
 
 foreach ($bfeed->response->checkins->items as $i) {
     
         $j = $i->beer->beer_name;
-        echo "<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
-        echo "<center><div class=circular style='width: 50px;height: 50px;background-image: url(". $i->user->user_avatar .");background-size: cover;display: block;border-radius: 100px;-webkit-border-radius:  100px;-moz-border-radius: 100px;'></div>";
-      echo "".$i->user->user_name."<br />";
+        $bfeeds .="<td width=20%><table width=95%><tr><td><div class='beerfeed'>";
+        $bfeeds .="<center><div class=circular style='width: 50px;height: 50px;background-image: url(". $i->user->user_avatar .");background-size: cover;display: block;border-radius: 100px;-webkit-border-radius:  100px;-moz-border-radius: 100px;'></div>";
+      $bfeeds .="".$i->user->user_name."<br />";
 
-      echo $i->beer->beer_name;
+      $bfeeds .=$i->beer->beer_name;
 
-      echo "</td></tr></table>";
-      echo "</div></td>";
+      $bfeeds .="</td></tr></table>";
+      $bfeeds .="</div></td>";
  
 }
 
-echo "</tr></table>";
+$bfeeds .="</tr></table>";
+    $fp = fopen($cachefile, 'w');
+    fwrite($fp, $bfeeds);
+    fclose($fp);
+
+ob_end_flush();
+include $cachefile;
+}
 } else {
 
 echo "";
@@ -102,7 +119,13 @@ function beerIMG($config,$untid) {
    $beerImg = '';																				
 //Only Display rating if $Client[id] is set
 if($config[ConfigNames::ClientID] && $untid!='0'){ 
-	                                                                                      
+
+$cachefile = "cache/".$untid.".img";
+$filetimemod = filemtime($cachefile)+86400;
+if (time()<$filetimemod) {
+include $cachefile;
+} else {
+ob_start();	                                                                                      
 $utconfig = array(
     'clientId'     => $config['ClientID'],
     'clientSecret' => $config['ClientSecret'],
@@ -110,27 +133,25 @@ $utconfig = array(
     'accessToken'  => '',
 );
 
+
 $untappd = new Pintlabs_Service_Untappd($utconfig);
 try {
     $feed = $untappd->beerInfo($untid);
 }  catch (Exception $e) {
     die($e->getMessage());
 }
+$beerImg = "<img src=".$feed->response->beer->beer_label." border=0 width=75 height=75>";
+$fp = fopen($cachefile, 'w');
+    fwrite($fp, $beerImg);
+    fclose($fp);
 
-
-$rs = $feed->response->beer->rating_score;
-
-
-$beerImg = "<img src=".$feed->response->beer->beer_label." border=0 width=100 height=100>";
-
+ob_end_flush();
+include $cachefile;
+}
 } else {
 
 $beerImg = '';
-
-
 } 
-
-return $beerImg;
 }
 
 function BeerRating($config,$untid) {
@@ -139,7 +160,12 @@ function BeerRating($config,$untid) {
    																
 //Only Display rating if $Client[id] is set
 if($config[ConfigNames::ClientID] && $untid!='0'){ 
-	                                                                                      
+$cachefile = "cache/".$untid.".rating";
+$filetimemod = filemtime($cachefile)+86400;
+if (time()<$filetimemod) {
+include $cachefile;
+} else {
+ob_start();		                                                                                      
 $utconfig = array(
     'clientId'     => $config['ClientID'],
     'clientSecret' => $config['ClientSecret'],
@@ -158,35 +184,39 @@ try {
 $rs = $feed->response->beer->rating_score;
 
 if ($rs >= '0' && $rs<'.5') {
- $img = "<span class=\"rating small r00\"></span><span class=\"num\">(".round($rs,2).")</span>";
+ $img = "<span class=\"rating small r00\"></span>";
 } else if ($rs=='.5') {
-$img = "<span class=\"rating small r05\"></span><span class=\"num\">(".round($rs,2).")</span>";
+$img = "<span class=\"rating small r05\"></span>";
 } else if ($rs >'.5' && $rs<'1.5') {
-$img = "<span class=\"rating small r10\"></span><span class=\"num\">(".round($rs,2).")</span>";
+$img = "<span class=\"rating small r10\"></span>";
 } else if ($rs=='1.5') {
-$img = "<span class=\"rating small r15\"></span><span class=\"num\">(".round($rs,2).")</span>";
+$img = "<span class=\"rating small r15\"></span>";
 } else if ($rs >'1.5' && $rs <'2.5') {
-$img = "<span class=\"rating small r20\"></span><span class=\"num\">(".round($rs,2).")</span>";
+$img = "<span class=\"rating small r20\"></span>";
 } else if ($rs =='2.5' ) {
-$img = "<span class=\"rating small r25\"></span><span class=\"num\">(".round($rs,2).")</span>";
+$img = "<span class=\"rating small r25\"></span>";
 } else if ($rs >'2.5' && $rs < '3.5') {
-$img = "<span class=\"rating small r30\"></span><span class=\"num\">(".round($rs,2).")</span>";
+$img = "<span class=\"rating small r30\"></span>";
 } else if ($rs=='3.5') {
- $img = "<span class=\"rating small r35\"></span><span class=\"num\">(".round($rs,2).")</span>";
+ $img = "<span class=\"rating small r35\"></span>";
 }  else if ($rs > '3.5' && $rs< '4.5') {
- $img = "<span class=\"rating small r40\"></span><span class=\"num\">(".round($rs,2).")</span>";
+ $img = "<span class=\"rating small r40\"></span>";
 } else if ($rs =='4.5') {
-$img = "<span class=\"rating small r45\"></span><span class=\"num\">(".round($rs,2).")</span>";
+$img = "<span class=\"rating small r45\"></span>";
 } else if ($rs>'4.5') {
-$img = "<span class=\"rating small r50\"></span><span class=\"num\">(".round($rs,2).")</span>";
+$img = "<span class=\"rating small r50\"></span>";
 } 
+$fp = fopen($cachefile, 'w');
+    fwrite($fp, $img);
+    fclose($fp);
+
+ob_end_flush();
+include $cachefile;
+}
 } else {
 $img = '';
 
 
 
 } 
-return $img;
-
-
 }

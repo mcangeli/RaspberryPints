@@ -96,7 +96,7 @@ table{
 table th,
 table td{
 	border-left: 1px white dashed;
-	padding: 1px 5px;
+	padding: 1px 1px;
 	text-align: center;
 	vertical-align: top;
 }
@@ -110,8 +110,8 @@ table thead{
 	margin: auto;
 }
 table thead th{
-	min-height:35px;
-	font-size: 1.05em;
+	min-height:15px;
+	font-size: 1.0em;
 	font-weight: bold;
 	vertical-align: top;
 }
@@ -119,21 +119,21 @@ table .tap-num{
 	width: 50px;
 }
 table .srm{
-	width: 125px;
+	width: 105px;
 	text-align: center;
 	vertical-align: middle;
 }
 table .ibu{
-	width: 125px;
+	width: 120px;
 	text-align: center;
 	vertical-align: middle;	
 }
 table td.name{
 	text-align: left;
-	padding: 5px;
+	padding-left: 5px;
 }
 table .abv{
-	width: 125px;
+	width: 120px;
 	text-align: center;
 	vertical-align: middle;
 }
@@ -369,8 +369,7 @@ p.rating .num {
 display: inline-block;
 padding-top: 4px;
 position: relative;
-top: -24px;
-float: right;
+
 }
 .beerimg{
 position: relative;
