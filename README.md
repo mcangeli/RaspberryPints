@@ -16,6 +16,7 @@ sudo apt-get install python-serial python-mysql
 prior to running and you need to edit your database settings as well as the tap pin numbers for the correct tap.
 
 Information on the flow meters:
+```
 Range
 Flow velocity*:	0.5 – 20 litre per minute
 Temperature:	-20 – +90 °C
@@ -43,7 +44,7 @@ Medium type:	clear or translucent liquids that do not block infrared light
 Viscosity:	1-1000 Cst
 Examples:	water, chemicals, oil, beer, syrup
 http://www.swissflow.com/sf800.html
-
+```
 
 Licensing:
 
