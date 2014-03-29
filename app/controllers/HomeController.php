@@ -39,15 +39,21 @@ class HomeController extends BaseController {
 		
 		}
 		} 
+		
+		$user = User::lists('username','id');
+		$data['user'] = array('user' => $user);
 		}
 		
-		
-		
-		
+				
 				
 			return View::make('home.index', $data);
 	}
 
-	
+	public static function setUserActive() {
+		$id = Input::gety('id');
+		DB::update('update users set pouring = 1 where id = ?', array($id));
+		
+		
+	}
 	
 }

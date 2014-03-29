@@ -121,5 +121,30 @@
 		@include('home.bfeed') 
 				
 		</div>
+		<div name=id>
+					{{ Form::model($user, array('action' => 'HomeController@setUserActive', 'method' => 'PUT')) }}
+					{{ Form::select('id', $user,"",array('id'=>"id")) }}<div class='icon-loading'></div>{{ Form::close() }}
+</div>							
+			
+@include('home.scripts')
+<script>
+		$(function () {
+			$('#id').on('change', 'select[name=id]', function(){
+				var $form = $(this).closest('form'),
+					$loadingIcon = $form.find('.icon-loading');
+
+				$loadingIcon.addClass('active');
+
+				$.ajax({
+				    url: $form.attr('action'),
+				    type: 'PUT',
+				    data:  $form.serialize(),
+				    success: function(result) {
+				        $loadingIcon.removeClass('active');
+				    }
+				});
+			});
+		});
+	</script>
 	</body>
 </html>

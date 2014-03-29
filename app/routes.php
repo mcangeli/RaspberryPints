@@ -12,7 +12,7 @@
 */
 
 Route::get('/', 'HomeController@index');
-
+Route::put('setUserActive/','HomeController@setUserActive');
 
 Route::get('login', 'AdminController@showLogin')->before('guest');
 Route::post('login', 'AdminController@doLogin');
